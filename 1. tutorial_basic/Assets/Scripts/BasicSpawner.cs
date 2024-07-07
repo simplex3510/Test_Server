@@ -23,11 +23,19 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         _mouseButton1 = _mouseButton1 || Input.GetMouseButton(1);
     }
 
+    /* GameMode mode
+     * 1. Single(Single Player Mode): 해당 열거형은 'Fusion.GameMode.Host' 모드와 유사하게 작동하지만, 연결을 수락하지 않는다.
+     * 2. Shared(Shared Mode): Fusion Plugin을 사용하는 Photon Cloud에서 실행되는 게임 서버에 연결하여 게임 클라이언트를 시작한다.
+     * 3. Server(Server Mode): 플레이어 없이 전용 게임 서버를 시작한다.
+     * 4. Host(Host Mode): 게임 서버를 시작하고 로컬 플레이어를 허용한다.
+     * 5. Client(Client Mode): 'Fusion.GameMode.Server' 또는 'Fusion.GameMode.Host' 모드의 피어에 연결하는 게임 클라이언트를 시작한다.
+     * 6. AutoHostOrClient: 자동으로 호스트나 클라이언트로 시작한다. 룸에 연결하는 첫 번째 피어는 호스트로 시작되며, 다른 모든 피어는 클라이언트로 연결된다.
+     */
     async private void StartGame(GameMode mode)
     {
         // Create the Fusion runner and let it know that we will be providing user input
-        _runner = gameObject.AddComponent<NetworkRunner>();
-        _runner.ProvideInput = true;
+        _runner = gameObject.AddComponent<NetworkRunner>();     // NetworkRunner: 네트워크 시뮬레이션을 실행하는 객체
+        _runner.ProvideInput = true;                            // ProvideInput: NetworkRunner에서 PlayerRef와 INetworkInput을 수집하고 있는지를 나타낸다.
 
         // Create the NetworkSceneInfo from the current scene
         var scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex);
@@ -37,6 +45,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
             sceneInfo.AddSceneRef(scene, LoadSceneMode.Additive);
         }
 
+        // StartGame(StartGameArgs args): 시뮬레이션 모드 및 기타 설정을 구성하는 데 사용된다. (게임 세션 등의 옵션 설정)
         // Start or join (depends on gamemode) a session with a specific name
         await _runner.StartGame(new StartGameArgs()
         {
@@ -45,8 +54,6 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
             Scene = scene,
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
         });
-
-        // gameObject.AddComponent<RunnerSimulatePhysics3D>();
     }
 
     private void OnGUI()

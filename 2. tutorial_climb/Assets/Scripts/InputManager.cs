@@ -45,6 +45,15 @@ public class InputManager : SimulationBehaviour, IBeforeUpdate, INetworkRunnerCa
         }
 
         NetworkButtons buttons = default;
+        Mouse mouse = Mouse.current;
+
+        if (mouse != null)
+        {
+            Vector2 mouseDelta = mouse.delta.ReadValue();
+            Vector2 lookRotationDelta = new Vector2(-mouseDelta.y, mouseDelta.x);
+            accumulatedInput.LookDelta += lookRotationDelta;
+        }
+
         if (keyboard != null)
         {
             Vector2 moveDirection = Vector2.zero;
@@ -83,6 +92,10 @@ public class InputManager : SimulationBehaviour, IBeforeUpdate, INetworkRunnerCa
         input.Set(accumulatedInput);
 
         resetInput = true;
+
+        // We have to reset the look delta immediately
+        // becuase we don't want mouse input being reused if another tick is executed during this same frame
+        accumulatedInput.LookDelta = default;
     }
          
     void INetworkRunnerCallbacks.OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
