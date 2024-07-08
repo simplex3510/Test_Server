@@ -9,6 +9,7 @@ namespace Asteroids.HostSimple
 {
     public class LocalInputPoller : MonoBehaviour, INetworkRunnerCallbacks
     {
+        // 이 키바인딩은 projectSetting의 Input Manger에 있음
         private const string AXIS_HORIZONTAL = "Horizontal";
         private const string AXIS_VERTICAL = "Vertical";
         private const string BUTTON_FIRE1 = "Fire1";

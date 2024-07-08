@@ -25,9 +25,9 @@ namespace Asteroids.HostSimple
             _nickName = nickName;
         }
 
-        public string SetNickName()
+        public string GetNickName()
         {
-            if (string.IsNullOrEmpty(_nickName))
+            if (string.IsNullOrWhiteSpace(_nickName))
             {
                 _nickName = GetRandomNickName();
             }
